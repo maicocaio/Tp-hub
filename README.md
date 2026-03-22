@@ -1,5 +1,5 @@
--- TELEPORT HUB PRO FINAL
--- Criar / Apagar Aba | Criar / Apagar TP | Mobile | Estável
+-- TELEPORT HUB PRO FINAL (BUG DE TP CORRIGIDO)
+-- Multi TP por aba | Mobile | Estável | Profissional
 
 local Players = game:GetService("Players")
 local UIS = game:GetService("UserInputService")
@@ -47,8 +47,8 @@ title.BackgroundTransparency = 1
 title.Text = "Teleport HUB PRO"
 title.Font = Enum.Font.GothamBold
 title.TextSize = 18
-title.TextXAlignment = Enum.TextXAlignment.Left
 title.TextColor3 = NEON
+title.TextXAlignment = Enum.TextXAlignment.Left
 
 local minimize = Instance.new("TextButton", top)
 minimize.Size = UDim2.new(0,30,0,30)
@@ -143,18 +143,11 @@ xyzBox.Parent = controls
 local copyBtn = button("Copiar XYZ")
 copyBtn.Parent = controls
 
--- LISTA TPS
-local tpList = Instance.new("ScrollingFrame", content)
-tpList.Position = UDim2.new(0,10,0,200)
-tpList.Size = UDim2.new(1,-20,1,-210)
-tpList.ScrollBarThickness = 6
-tpList.BackgroundTransparency = 1
-
-local tpLayout = Instance.new("UIListLayout", tpList)
-tpLayout.Padding = UDim.new(0,6)
-tpLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-	tpList.CanvasSize = UDim2.new(0,0,0,tpLayout.AbsoluteContentSize.Y + 10)
-end)
+-- CONTAINER DE TPS
+local tpContainer = Instance.new("Frame", content)
+tpContainer.Position = UDim2.new(0,10,0,200)
+tpContainer.Size = UDim2.new(1,-20,1,-210)
+tpContainer.BackgroundTransparency = 1
 
 -- SISTEMA
 local tabs = {}
@@ -187,10 +180,18 @@ local function createTab(name)
 	btn.Parent = tabsFrame
 	btn.BackgroundColor3 = BG
 
-	local frame = Instance.new("Frame", tpList)
+	local frame = Instance.new("ScrollingFrame", tpContainer)
 	frame.Size = UDim2.new(1,0,1,0)
-	frame.BackgroundTransparency = 1
+	frame.CanvasSize = UDim2.new(0,0,0,0)
+	frame.ScrollBarThickness = 6
 	frame.Visible = false
+	frame.BackgroundTransparency = 1
+
+	local layout = Instance.new("UIListLayout", frame)
+	layout.Padding = UDim.new(0,6)
+	layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+		frame.CanvasSize = UDim2.new(0,0,0,layout.AbsoluteContentSize.Y + 10)
+	end)
 
 	local tab = {button = btn, frame = frame, name = name}
 	table.insert(tabs, tab)
@@ -204,7 +205,7 @@ local function createTab(name)
 	end
 end
 
--- TAB INICIAL
+-- ABA INICIAL
 createTab("Principal")
 
 -- AÇÕES
